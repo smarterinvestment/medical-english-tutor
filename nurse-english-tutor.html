@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#060e1a"/>
+<title>Medical English — Tutor de Pronunciación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;background:#060e1a;color:#d4eeff;font-family:'Crimson Text',Georgia,serif;overflow-x:hidden;}
+  ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1a3a5e;border-radius:2px}
+  .raj{font-family:'Rajdhani',sans-serif;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.05)}}
+  @keyframes ripple{0%{transform:scale(1);opacity:1}100%{transform:scale(2.5);opacity:0}}
+  @keyframes wave{0%,100%{height:8px}50%{height:28px}}
+  .fade-up{animation:fadeUp .4s ease both}
+  button:active{transform:scale(.96);opacity:.85}
+  input:focus,textarea:focus{outline:none}
+  .grid-bg{
+    position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(#0f2d4a14 1px,transparent 1px),linear-gradient(90deg,#0f2d4a14 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+  .glow-top{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,#0f2d4a55,transparent)}
+  .wrap{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:0 16px 60px}
+
+  /* HOME */
+  .module-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+  .module-btn{background:linear-gradient(145deg,#0d1f35,#091525);border:1px solid #1a3a5e;border-radius:12px;padding:14px 12px;cursor:pointer;text-align:left;transition:all .18s;color:#d4eeff;width:100%}
+  .module-btn:hover,.module-btn:active{transform:translateY(-2px)}
+
+  /* TABS */
+  .tabs{display:flex;gap:4px;margin-bottom:16px;overflow-x:auto;padding-bottom:3px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:.62rem;font-weight:600;letter-spacing:.03em;font-family:'Rajdhani',sans-serif;text-transform:uppercase;border:1px solid #1a2a3e;background:transparent;color:#3a5a7e;white-space:nowrap;transition:all .15s}
+  .tab.active{border-color:#1a7ae8;background:#0f2d4a;color:#1a7ae8}
+
+  /* CARDS */
+  .flash-wrap{perspective:900px;height:130px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,2,.6,1)}
+  .flash-inner.flipped{transform:rotateY(180deg)}
+  .flash-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;gap:4px}
+  .flash-front{background:linear-gradient(145deg,#0d2137,#091828);border:1px solid #1a4a6e}
+  .flash-back{background:linear-gradient(145deg,#0d2d1a,#091f10);border:1px solid #1a6e3a;transform:rotateY(180deg)}
+  .phrase-card{background:linear-gradient(135deg,#0d1f35,#091728);border:1px solid #1a3a5e;border-left:3px solid #1a7ae8;border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  .bubble-nurse{background:#0f2d4a;border:1px solid #1a7ae8;border-radius:16px 16px 4px 16px}
+  .bubble-patient{background:#1a1a2e;border:1px solid #5a4a8e;border-radius:16px 16px 16px 4px}
+  .bubble-family{background:#1a2a1a;border:1px solid #2a8a4a;border-radius:16px 16px 16px 4px}
+  .bubble-staff{background:#2a1a2e;border:1px solid #8a4a8e;border-radius:16px 16px 4px 16px}
+
+  /* SPEAK BTN */
+  .speak-btn{border:none;cursor:pointer;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.72rem}
+  .speak-btn.sm{width:26px;height:26px}
+  .speak-btn.md{width:34px;height:34px;font-size:.9rem}
+  .speak-btn.normal{background:linear-gradient(135deg,#1a4a6e,#0f2d4a);color:#7ab8e8}
+  .speak-btn.slow{background:linear-gradient(135deg,#1a3a2a,#0a2018);color:#6effa0}
+  .speak-btn.playing{background:linear-gradient(135deg,#6effa0,#22c55e);color:#000;box-shadow:0 0 12px #6effa066}
+
+  /* PRONUNCIATION MODAL */
+  .pron-overlay{position:fixed;inset:0;background:#000000ee;z-index:200;display:flex;align-items:flex-end;justify-content:center}
+  .pron-sheet{background:linear-gradient(160deg,#091828,#0c1c30);border:1px solid #1a4a6e;border-radius:22px 22px 0 0;padding:18px 18px 40px;width:100%;max-width:500px;box-shadow:0 -12px 60px #0009;max-height:92vh;overflow-y:auto}
+  .handle{width:36px;height:4px;background:#1a3a5e;border-radius:2px;margin:0 auto 14px}
+
+  /* MIC BUTTON */
+  .mic-ring{position:relative;display:inline-flex;align-items:center;justify-content:center}
+  .mic-ring .ripple{position:absolute;border-radius:50%;border:2px solid #ef4444;animation:ripple 1.2s ease-out infinite}
+  .mic-ring .ripple2{animation-delay:.4s}
+  #mic-main-btn{width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:2rem;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:all .2s}
+  #mic-main-btn.idle{background:linear-gradient(135deg,#1a7ae8,#0f5aad);box-shadow:0 4px 20px #1a7ae844}
+  #mic-main-btn.listening{background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 0 30px #ef444466;animation:pulse .8s infinite}
+  #mic-main-btn.processing{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 0 20px #f59e0b44}
+
+  /* WAVEFORM */
+  .waveform{display:flex;align-items:center;gap:3px;height:40px;justify-content:center}
+  .wave-bar{width:4px;background:#ef4444;border-radius:2px;animation:wave .6s ease-in-out infinite}
+  .wave-bar:nth-child(2){animation-delay:.1s}.wave-bar:nth-child(3){animation-delay:.2s}
+  .wave-bar:nth-child(4){animation-delay:.3s}.wave-bar:nth-child(5){animation-delay:.4s}
+  .wave-bar:nth-child(6){animation-delay:.3s}.wave-bar:nth-child(7){animation-delay:.2s}
+
+  /* SCORE BAR */
+  .score-bar-wrap{height:10px;background:#0d1f35;border-radius:5px;overflow:hidden;margin-bottom:6px}
+  .score-bar-fill{height:100%;border-radius:5px;transition:width .8s ease}
+
+  /* QUIZ */
+  .quiz-input{width:100%;background:#0d1f35;border-radius:12px;padding:14px 16px;color:#d4eeff;font-size:1rem;text-align:center;font-family:'Crimson Text',Georgia,serif;border:2px solid #1a3a5e;transition:border-color .3s}
+  .quiz-input:focus{border-color:#1a7ae8}
+  .quiz-input.correct{border-color:#6effa0}
+  .quiz-input.wrong{border-color:#ff6060}
+
+  .btn-primary{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#1a7ae8,#0f5aad);color:#fff;font-weight:700;font-size:.95rem;cursor:pointer;font-family:'Rajdhani',sans-serif;letter-spacing:.05em}
+  .btn-green{background:linear-gradient(135deg,#6effa0,#22c55e);color:#000}
+  .btn-ghost{background:transparent;border:1px solid #1a3a5e;color:#5a8aaa}
+  .btn-sm{padding:10px 14px;border-radius:10px;font-size:.82rem}
+
+  /* PROGRESS */
+  .progress-bar{height:4px;background:#0d1f35;border-radius:2px;margin-bottom:20px}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#1a7ae8,#6effa0);border-radius:2px;transition:width .4s}
+
+  /* STAR RATING */
+  .stars{display:flex;gap:8px;justify-content:center;margin:10px 0}
+  .star-btn{width:52px;height:52px;border-radius:50%;border:2px solid #1a3a5e;background:#0d1f35;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+  .star-btn:hover,.star-btn.selected{transform:scale(1.15);border-color:#f59e0b;background:#1a2a10;box-shadow:0 0 14px #f59e0b44}
+
+  .hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="glow-top"></div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- HOME SCREEN -->
+<!-- ═══════════════════════════════════ -->
+<div id="screen-home" class="wrap" style="padding-top:36px">
+  <div style="text-align:center;margin-bottom:28px" class="fade-up">
+    <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:linear-gradient(135deg,#0f2d4a,#1a4a6e);border:2px solid #1a7ae8;border-radius:50%;font-size:1.8rem;margin-bottom:14px;box-shadow:0 0 30px #1a7ae822">🩺</div>
+    <h1 class="raj" style="font-size:clamp(1.6rem,6vw,2.2rem);font-weight:700;color:#d4eeff;letter-spacing:.05em;line-height:1.1">MEDICAL ENGLISH</h1>
+    <p style="font-size:.95rem;color:#5a8aaa;font-style:italic;margin-top:6px">Tutor de inglés para enfermería y cuidado del adulto mayor</p>
+    <div style="display:flex;justify-content:center;gap:6px;margin-top:10px;flex-wrap:wrap">
+      <span style="background:#0d1f35;border:1px solid #1a3a5e;border-radius:20px;padding:3px 10px;font-size:.6rem;color:#3a7aab;text-transform:uppercase;letter-spacing:.07em">10 módulos</span>
+      <span style="background:#0d1f35;border:1px solid #1a3a5e;border-radius:20px;padding:3px 10px;font-size:.6rem;color:#3a7aab;text-transform:uppercase;letter-spacing:.07em">pronunciación real 🎤</span>
+      <span style="background:#0d1f35;border:1px solid #1a3a5e;border-radius:20px;padding:3px 10px;font-size:.6rem;color:#3a7aab;text-transform:uppercase;letter-spacing:.07em">quiz</span>
+    </div>
+  </div>
+  <p class="raj" style="font-size:.68rem;color:#2a4a6e;text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:12px">Selecciona un módulo</p>
+  <div class="module-grid" id="module-grid"></div>
+  <div style="background:#0d1f35;border:1px solid #1a3a5e;border-radius:14px;padding:16px">
+    <p class="raj" style="font-size:.68rem;color:#2a5a8e;text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:10px">✦ Genera contenido con IA — tu propio tema</p>
+    <div style="display:flex;gap:8px">
+      <input id="custom-input" placeholder="ej: cuidado de heridas, insulina, ACV..." style="flex:1;background:#091525;border:1px solid #1a3a5e;border-radius:8px;padding:10px 12px;color:#d4eeff;font-size:.88rem;font-family:inherit"/>
+      <button class="raj" onclick="handleCustom()" style="background:linear-gradient(135deg,#1a7ae8,#0f5aad);border:none;border-radius:8px;padding:10px 16px;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">IA →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- LEARN SCREEN -->
+<!-- ═══════════════════════════════════ -->
+<div id="screen-learn" class="wrap hidden" style="padding-top:22px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <button class="raj btn-ghost" style="padding:6px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;border:1px solid #1a3a5e" onclick="showHome()">← Inicio</button>
+    <h2 id="learn-title" class="raj" style="font-weight:700;font-size:1rem;color:#d4eeff;letter-spacing:.04em"></h2>
+  </div>
+  <div id="ai-loading" class="hidden" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh">
+    <div style="width:44px;height:44px;border:3px solid #0d1f35;border-top-color:#1a7ae8;border-radius:50%;animation:spin .75s linear infinite;margin-bottom:18px"></div>
+    <p style="color:#2a5a8e;font-size:.9rem;animation:pulse 1.5s infinite;font-style:italic">Generando tu lección con IA...</p>
+  </div>
+  <div id="learn-content">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="vocab" onclick="switchTab('vocab',this)">🃏 Vocab</button>
+      <button class="tab" data-tab="pronunciation" onclick="switchTab('pronunciation',this)">🎤 Pronunciar</button>
+      <button class="tab" data-tab="phrases" onclick="switchTab('phrases',this)">💬 Frases</button>
+      <button class="tab" data-tab="dialogue" onclick="switchTab('dialogue',this)">🎭 Diálogo</button>
+      <button class="tab" data-tab="quiz" onclick="startQuiz()">🧠 Quiz</button>
+    </div>
+    <div id="tab-vocab"></div>
+    <div id="tab-pronunciation" class="hidden"></div>
+    <div id="tab-phrases" class="hidden"></div>
+    <div id="tab-dialogue" class="hidden"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- QUIZ SCREEN -->
+<!-- ═══════════════════════════════════ -->
+<div id="screen-quiz" class="wrap hidden" style="padding-top:22px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <button class="raj btn-ghost" style="padding:6px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;border:1px solid #1a3a5e" onclick="showLearn()">← Volver</button>
+    <div id="quiz-score-badge" style="background:#0d1f35;border:1px solid #1a3a5e;border-radius:20px;padding:4px 14px;color:#1a7ae8;font-size:.78rem;font-weight:700" class="raj">0 ✓ / 0</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
+  <div style="background:#0d1f35;border:1px solid #1a3a5e;border-radius:18px;padding:24px 20px;text-align:center;margin-bottom:18px">
+    <p class="raj" style="color:#3a7aab;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">¿Cómo se dice en inglés?</p>
+    <p id="quiz-question" style="font-size:1.5rem;color:#6effa0;font-weight:700;margin-bottom:4px"></p>
+    <p id="quiz-counter" class="raj" style="font-size:.7rem;color:#1a4a6e"></p>
+  </div>
+  <input id="quiz-input" class="quiz-input" placeholder="Escribe en inglés..." oninput="quizInputChanged()" onkeydown="if(event.key==='Enter')checkQuiz()"/>
+  <div id="quiz-result-box" class="hidden" style="border-radius:12px;padding:14px;margin-bottom:12px;text-align:center;animation:fadeUp .2s ease both">
+    <p id="quiz-result-msg" style="font-weight:700;font-size:.9rem;margin-bottom:4px"></p>
+    <p id="quiz-example" style="color:#3a6a8a;font-size:.72rem;font-style:italic"></p>
+  </div>
+  <button id="quiz-btn" class="btn-primary" onclick="checkQuiz()">Verificar</button>
+  <div id="quiz-done" class="hidden" style="text-align:center;padding-top:40px">
+    <div id="quiz-done-emoji" style="font-size:4rem;margin-bottom:12px"></div>
+    <h2 id="quiz-done-title" style="font-size:2rem;color:#6effa0;margin-bottom:6px"></h2>
+    <p id="quiz-done-score" style="color:#5a8aaa;margin-bottom:30px"></p>
+    <button class="btn-primary" style="margin-bottom:10px" onclick="restartQuiz()">🔄 Intentar de nuevo</button>
+    <br>
+    <button class="btn-primary btn-ghost" onclick="showLearn()">← Volver al módulo</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- PRONUNCIATION MODAL -->
+<!-- ═══════════════════════════════════ -->
+<div id="pron-modal" class="pron-overlay hidden">
+  <div class="pron-sheet" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 class="raj" style="font-weight:700;color:#d4eeff;font-size:.95rem;letter-spacing:.05em">🎤 Práctica de Pronunciación</h3>
+      <button onclick="closePronModal()" style="background:none;border:none;color:#5a8aaa;cursor:pointer;font-size:1.4rem;line-height:1;padding:4px">✕</button>
+    </div>
+
+    <!-- Word box -->
+    <div style="background:#080f1c;border:1px solid #1a3a5e;border-radius:14px;padding:14px;text-align:center;margin-bottom:14px">
+      <p id="pron-word" style="font-size:1.3rem;font-weight:700;color:#d4eeff;margin-bottom:6px"></p>
+      <div id="pron-phonetic" style="background:#1a2a10;border:1px solid #2a4a15;border-radius:8px;padding:5px 12px;margin-bottom:10px;display:inline-block"></div>
+      <div style="display:flex;gap:14px;justify-content:center;align-items:center">
+        <div style="text-align:center">
+          <button class="speak-btn md normal" onclick="speakPron(false)" id="pron-speak-normal">🔊</button>
+          <p style="margin:3px 0 0;font-size:.58rem;color:#2a4a6e">Normal</p>
+        </div>
+        <div style="text-align:center">
+          <button class="speak-btn md slow" onclick="speakPron(true)" id="pron-speak-slow">🐢</button>
+          <p style="margin:3px 0 0;font-size:.58rem;color:#2a4a6e">Despacio</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDLE state -->
+    <div id="pron-idle">
+      <div style="background:#0a1828;border:1px solid #1a2a3e;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
+        <p style="color:#5a8aaa;font-size:.78rem;line-height:1.8;margin:0">
+          <strong style="color:#d4eeff;display:block;margin-bottom:4px">Pasos para practicar:</strong>
+          1️⃣ Escucha el audio 🔊 varias veces<br/>
+          2️⃣ Practica en voz alta sin presión<br/>
+          3️⃣ Presiona el botón rojo y habla 🎤<br/>
+          4️⃣ Recibe retroalimentación de IA 💡
+        </p>
+      </div>
+      <div style="text-align:center;margin-bottom:14px">
+        <div class="mic-ring">
+          <div class="ripple" id="ripple1" style="width:80px;height:80px;display:none"></div>
+          <div class="ripple ripple2" id="ripple2" style="width:80px;height:80px;display:none"></div>
+          <button id="mic-main-btn" class="idle" onclick="toggleMic()">🎤</button>
+        </div>
+        <p id="mic-label" class="raj" style="color:#1a7ae8;font-size:.8rem;font-weight:600;margin-top:10px;letter-spacing:.04em">PRESIONA PARA HABLAR</p>
+      </div>
+    </div>
+
+    <!-- LISTENING state -->
+    <div id="pron-listening" class="hidden" style="text-align:center;margin-bottom:14px">
+      <div class="waveform" style="margin-bottom:10px">
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+      </div>
+      <p class="raj" style="color:#ef4444;font-weight:700;font-size:.9rem;margin-bottom:4px">🔴 Escuchando... habla ahora</p>
+      <p style="color:#5a8aaa;font-size:.72rem">Di la palabra en inglés claramente</p>
+      <button onclick="stopListening()" style="margin-top:10px;padding:8px 20px;border-radius:10px;border:2px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.82rem">⏹ Detener</button>
+    </div>
+
+    <!-- PROCESSING -->
+    <div id="pron-processing" class="hidden" style="text-align:center;padding:14px 0">
+      <div style="width:36px;height:36px;border:3px solid #0d1f35;border-top-color:#1a7ae8;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>
+      <p style="color:#3a7aab;font-size:.85rem;font-style:italic">Analizando tu pronunciación con IA...</p>
+    </div>
+
+    <!-- RESULT -->
+    <div id="pron-result" class="hidden">
+      <div id="pron-score-box" style="border-radius:14px;padding:14px 16px;margin-bottom:12px;text-align:center">
+        <p style="color:#3a5a7a;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Lo que escuché:</p>
+        <p id="pron-heard" style="color:#d4eeff;font-size:1rem;font-style:italic;margin-bottom:12px;font-family:'Crimson Text',Georgia,serif"></p>
+        <div class="score-bar-wrap"><div id="pron-score-fill" class="score-bar-fill"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <p id="pron-score-msg" style="font-weight:700;font-size:.88rem;margin:0"></p>
+          <span id="pron-score-pct" class="raj" style="font-weight:700;font-size:1.1rem"></span>
+        </div>
+      </div>
+      <div id="pron-ai-tip" style="background:linear-gradient(135deg,#0a1828,#0c1e30);border:1px solid #1a3a5e;border-left:3px solid #1a7ae8;border-radius:12px;padding:12px 14px;margin-bottom:12px">
+        <p class="raj" style="color:#3a7aab;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">💡 Feedback de tu tutora</p>
+        <p id="pron-tip-text" style="color:#c4ddee;font-size:.85rem;line-height:1.6;font-style:italic"></p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="resetPron()" style="flex:1;padding:12px;border-radius:10px;border:1px solid #1a3a5e;background:transparent;color:#5a8aaa;cursor:pointer;font-size:.82rem;font-family:inherit">🔄 Intentar</button>
+        <button onclick="closePronModal()" style="flex:1;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#1a7ae8,#0f5aad);color:#fff;cursor:pointer;font-size:.82rem;font-weight:700;font-family:'Rajdhani',sans-serif">✓ Continuar</button>
+      </div>
+    </div>
+
+    <!-- NO SPEECH API fallback -->
+    <div id="pron-fallback" class="hidden">
+      <div style="background:#1a1a0a;border:2px solid #f59e0b;border-radius:14px;padding:14px;text-align:center;margin-bottom:14px">
+        <p style="color:#fbbf24;font-size:.85rem;font-weight:700;margin-bottom:8px">⚠️ Tu navegador no soporta reconocimiento de voz</p>
+        <p style="color:#5a8aaa;font-size:.78rem;line-height:1.6;margin-bottom:10px">
+          Para usar el micrófono real, abre esta app en <strong style="color:#fbbf24">Chrome</strong> o <strong style="color:#fbbf24">Edge</strong> en tu iPhone/Android.<br/>
+          Safari tiene restricciones con el micrófono.
+        </p>
+        <p style="color:#3a5a7a;font-size:.72rem">Mientras tanto, escucha el audio y practica en voz alta 🔊</p>
+      </div>
+      <button onclick="closePronModal()" class="btn-primary">Entendido ✓</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const PHONETICS = {
+  "blood pressure":"blad présher","heart rate":"jart réit","oxygen saturation":"óksi-chen sáchu-réi-shon",
+  "temperature":"témpe-ra-chur","respiratory rate":"réspi-ra-tori réit","blood sugar":"blad shú-gar",
+  "pulse oximeter":"pols ok-sí-mi-ter","hypertension":"jai-per-tén-shon","dosage":"dó-sich",
+  "side effects":"said i-fécts","allergic reaction":"a-lér-chik ri-ák-shon","prescription":"pres-críp-shon",
+  "refill":"ri-fíl","administer":"ad-mí-nis-ter","swallow":"suá-lou","sublingual":"sob-lín-gual",
+  "pain scale":"pein skéil","shortness of breath":"shórt-nes of brez","swelling":"swé-ling",
+  "nausea":"nó-sha","confusion":"kon-fiú-shon","chest pain":"chest pein","fatigue":"fa-tíg",
+  "dizziness":"dí-zi-nes","fall risk":"fol risk","walker":"wó-ker","wheelchair":"wíl-cher",
+  "bed rails":"bed réils","transfer":"tráns-fer","weight-bearing":"wéit bé-ring","gait belt":"géit belt",
+  "ambulate":"ám-biu-leit","dementia":"di-mén-sha","disoriented":"dis-ó-ri-en-ted",
+  "agitated":"á-chi-téi-ted","sundowning":"sán-daun-ing","memory loss":"mé-mo-ri los",
+  "redirect":"ri-di-rékt","cognitive decline":"cóg-ni-tiv di-cláin","reorientation":"ri-ó-ri-en-téi-shon",
+  "code blue":"koud blú","stroke":"stróuk","seizure":"sí-sher","unresponsive":"on-res-pón-siv",
+  "CPR":"si-pi-ár","defibrillator":"di-fí-bri-léi-tor","airway":"éir-wei","rapid response":"rá-pid res-póns",
+  "prognosis":"prog-nó-sis","next of kin":"nekst of kin","hospice":"jós-pis","consent":"con-sént","discharge":"dís-charj",
+  "intake and output":"ín-teik and áut-put","nursing notes":"nér-sing nouts","shift report":"shift ri-pórt",
+  "assessment":"a-sés-ment","intervention":"in-ter-vén-shon","SOAP note":"soup nout",
+  "chief complaint":"chiif com-pléint","allergies":"á-ler-chis","dysphagia":"dis-féi-cha",
+  "appetite":"á-pi-tait","thickened liquids":"zí-kend lí-kuids","malnutrition":"mal-nu-trí-shon",
+  "tube feeding":"tiub fí-ding","dehydration":"di-jai-dréi-shon","caloric intake":"ca-ló-ric ín-teik",
+  "bed bath":"bed baz","oral hygiene":"ó-ral jai-chín","pressure ulcer":"pré-sher ól-ser",
+  "incontinence":"in-kón-ti-nens","skin integrity":"skin in-tég-ri-ti","catheter":"cá-ze-ter",
+  "repositioning":"ri-po-sí-shon-ing",
+};
+
+const MODULES = [
+  {id:"vitals",icon:"❤️",label:"Signos Vitales",color:"#ef4444",en:"Vital Signs"},
+  {id:"medications",icon:"💊",label:"Medicamentos",color:"#3b82f6",en:"Medications"},
+  {id:"mobility",icon:"🦽",label:"Movilidad & Caídas",color:"#f59e0b",en:"Mobility & Falls"},
+  {id:"symptoms",icon:"🩺",label:"Síntomas & Dolor",color:"#8b5cf6",en:"Symptoms & Pain"},
+  {id:"nutrition",icon:"🥗",label:"Nutrición & Dieta",color:"#10b981",en:"Nutrition & Diet"},
+  {id:"hygiene",icon:"🛁",label:"Higiene Personal",color:"#06b6d4",en:"Personal Hygiene"},
+  {id:"cognitive",icon:"🧠",label:"Cognición & Demencia",color:"#ec4899",en:"Cognition & Dementia"},
+  {id:"emergency",icon:"🚨",label:"Emergencias Médicas",color:"#f97316",en:"Medical Emergencies"},
+  {id:"family",icon:"👨‍👩‍👧",label:"Hablar con la Familia",color:"#84cc16",en:"Family Communication"},
+  {id:"charting",icon:"📋",label:"Documentación",color:"#64748b",en:"Charting & Reports"},
+];
+
+const CONTENT = {
+  vitals:{
+    vocabulary:[
+      {term:"blood pressure",translation:"presión arterial",example:"Her blood pressure is 130 over 80."},
+      {term:"heart rate",translation:"frecuencia cardíaca / pulso",example:"The heart rate is irregular."},
+      {term:"oxygen saturation",translation:"saturación de oxígeno",example:"Oxygen saturation dropped to 92%."},
+      {term:"temperature",translation:"temperatura",example:"He has a low-grade fever."},
+      {term:"respiratory rate",translation:"frecuencia respiratoria",example:"Respiratory rate is 18 breaths per minute."},
+      {term:"blood sugar",translation:"azúcar en sangre / glucosa",example:"We need to check her blood sugar."},
+      {term:"pulse oximeter",translation:"oxímetro de pulso",example:"Place the pulse oximeter on her finger."},
+      {term:"hypertension",translation:"hipertensión / presión alta",example:"He has a history of hypertension."},
+    ],
+    phrases:[
+      {phrase:"I'm going to take your blood pressure now.",translation:"Voy a tomarle la presión ahora."},
+      {phrase:"Please breathe normally while I check your oxygen levels.",translation:"Por favor respire normalmente mientras reviso sus niveles de oxígeno."},
+      {phrase:"Your temperature is slightly elevated.",translation:"Su temperatura está un poco elevada."},
+      {phrase:"Your blood pressure is higher than usual today.",translation:"Su presión arterial está más alta que lo usual hoy."},
+      {phrase:"I need to monitor your vitals every four hours.",translation:"Necesito monitorear sus signos vitales cada cuatro horas."},
+      {phrase:"Can you tell me if you feel dizzy or short of breath?",translation:"¿Puede decirme si siente mareos o falta de aire?"},
+    ],
+    dialogue:{
+      context:"La enfermera Rosa llega al cuarto del señor Williams, 78 años con hipertensión. Necesita tomar sus signos vitales.",
+      turns:[
+        {speaker:"Rosa",role:"nurse",message:"Good morning, Mr. Williams! How are you feeling today?",note:"'How are you feeling?' — pregunta estándar para evaluar el estado general."},
+        {speaker:"Mr. Williams",role:"patient",message:"A bit tired, and my head hurts a little.",note:"'A bit' = un poco. 'Hurts' = duele. Vocabulario de síntomas muy común."},
+        {speaker:"Rosa",role:"nurse",message:"I see. Let me take your vitals. I'm going to check your blood pressure first.",note:"'I'm going to' es la forma natural de anunciar lo que vas a hacer al paciente."},
+        {speaker:"Mr. Williams",role:"patient",message:"Okay, go ahead.",note:"'Go ahead' = adelante. El paciente da su consentimiento."},
+        {speaker:"Rosa",role:"nurse",message:"Your blood pressure is 158 over 92 — a little high. I'll notify the doctor.",note:"'Hold the dose' = retener la dosis. 'Notify' = notificar."},
+        {speaker:"Rosa",role:"nurse",message:"Not an emergency, but the doctor needs to know. I'll be right back.",note:"'I'll be right back' = regreso enseguida. Muy útil para no dejar al paciente con ansiedad."},
+      ]
+    }
+  },
+  medications:{
+    vocabulary:[
+      {term:"dosage",translation:"dosis",example:"The dosage is two tablets twice a day."},
+      {term:"side effects",translation:"efectos secundarios",example:"Dizziness is a common side effect."},
+      {term:"allergic reaction",translation:"reacción alérgica",example:"Watch for any allergic reaction."},
+      {term:"prescription",translation:"receta médica",example:"This medication requires a prescription."},
+      {term:"refill",translation:"resurtido / recarga",example:"Her prescription needs a refill."},
+      {term:"administer",translation:"administrar",example:"Administer the medication with food."},
+      {term:"swallow",translation:"tragar",example:"Can you swallow this pill?"},
+      {term:"sublingual",translation:"sublingual (bajo la lengua)",example:"Place it sublingual, under the tongue."},
+    ],
+    phrases:[
+      {phrase:"It's time for your medication.",translation:"Es hora de su medicamento."},
+      {phrase:"Have you taken your pills this morning?",translation:"¿Ha tomado sus pastillas esta mañana?"},
+      {phrase:"This pill helps control your blood pressure.",translation:"Esta pastilla ayuda a controlar su presión arterial."},
+      {phrase:"Do you have any allergies to medications?",translation:"¿Tiene alguna alergia a medicamentos?"},
+      {phrase:"Please do not skip your doses.",translation:"Por favor no se salte sus dosis."},
+      {phrase:"I need to crush this tablet — is that okay?",translation:"Necesito triturar esta pastilla — ¿está bien?"},
+    ],
+    dialogue:{
+      context:"La enfermera Carmen administra medicamentos a la señora Thompson, 82 años con diabetes.",
+      turns:[
+        {speaker:"Carmen",role:"nurse",message:"Mrs. Thompson, I have your evening medications. You have three pills tonight.",note:"Siempre anuncia cuántos medicamentos hay."},
+        {speaker:"Mrs. Thompson",role:"patient",message:"Three? I usually only take two. What's the new one?",note:"El paciente pregunta sobre cambios. Debemos estar preparadas para explicar."},
+        {speaker:"Carmen",role:"nurse",message:"The doctor added Metformin for your blood sugar. Take it with food to avoid an upset stomach.",note:"'Upset stomach' = malestar estomacal."},
+        {speaker:"Mrs. Thompson",role:"patient",message:"Will it cause any side effects?",note:"'Side effects' = efectos secundarios. Pregunta muy común."},
+        {speaker:"Carmen",role:"nurse",message:"Some people feel a little nauseous at first. If that happens, let me know right away.",note:"'Let me know' = avíseme. Frases esenciales de seguimiento."},
+      ]
+    }
+  },
+  symptoms:{
+    vocabulary:[
+      {term:"pain scale",translation:"escala del dolor",example:"On a scale of 1 to 10, what's your pain level?"},
+      {term:"shortness of breath",translation:"falta de aire / disnea",example:"Is he experiencing shortness of breath?"},
+      {term:"swelling",translation:"hinchazón / inflamación",example:"There is swelling in her ankles."},
+      {term:"nausea",translation:"náuseas",example:"She complains of nausea after meals."},
+      {term:"confusion",translation:"confusión / desorientación",example:"He appears confused about the date."},
+      {term:"chest pain",translation:"dolor en el pecho",example:"Any chest pain must be reported immediately."},
+      {term:"fatigue",translation:"fatiga / cansancio extremo",example:"He's been experiencing severe fatigue."},
+      {term:"dizziness",translation:"mareos / vértigo",example:"She feels dizzy when standing up."},
+    ],
+    phrases:[
+      {phrase:"Can you rate your pain from 1 to 10?",translation:"¿Puede calificar su dolor del 1 al 10?"},
+      {phrase:"Where exactly does it hurt?",translation:"¿Dónde exactamente le duele?"},
+      {phrase:"Is the pain sharp or dull?",translation:"¿El dolor es agudo o sordo?"},
+      {phrase:"How long have you had this symptom?",translation:"¿Hace cuánto tiempo tiene este síntoma?"},
+      {phrase:"Are you having any difficulty breathing?",translation:"¿Tiene alguna dificultad para respirar?"},
+      {phrase:"I'm going to notify the doctor about what you told me.",translation:"Voy a notificar al médico sobre lo que me dijo."},
+    ],
+    dialogue:{
+      context:"El señor García, 75 años, llama a la enfermera Lucia a las 2 AM con molestia en el pecho.",
+      turns:[
+        {speaker:"Mr. García",role:"patient",message:"Nurse... I don't feel well. My chest feels tight.",note:"'Tight' = apretado. Síntoma de alarma cardíaca. Actuar de inmediato."},
+        {speaker:"Lucia",role:"nurse",message:"Mr. García, I'm right here. When did this start?",note:"'I'm right here' = estoy aquí. Tranquiliza al paciente."},
+        {speaker:"Mr. García",role:"patient",message:"About twenty minutes ago. Maybe a 4 out of 10.",note:"Usa la escala del dolor. Documenta el nivel."},
+        {speaker:"Lucia",role:"nurse",message:"Does the pain go to your arm, neck, or jaw?",note:"Preguntas de irradiación del dolor cardíaco. Protocolo estándar."},
+        {speaker:"Mr. García",role:"patient",message:"A little to my left arm, yes.",note:"Signo de alarma. La enfermera debe escalar de inmediato."},
+        {speaker:"Lucia",role:"nurse",message:"I'm calling the doctor now. Stay still and relax. I won't leave you.",note:"'I won't leave you' = no lo voy a dejar."},
+      ]
+    }
+  },
+  mobility:{
+    vocabulary:[
+      {term:"fall risk",translation:"riesgo de caída",example:"She is a high fall risk patient."},
+      {term:"walker",translation:"andador",example:"Always use your walker when walking."},
+      {term:"wheelchair",translation:"silla de ruedas",example:"Transfer him to the wheelchair carefully."},
+      {term:"bed rails",translation:"barandillas de la cama",example:"Keep the bed rails up at night."},
+      {term:"transfer",translation:"transferir / pasar (al paciente)",example:"Let me help you transfer to the chair."},
+      {term:"weight-bearing",translation:"soporte de peso",example:"She is non-weight-bearing on her left leg."},
+      {term:"gait belt",translation:"cinturón de marcha / de seguridad",example:"Secure the gait belt before ambulating."},
+      {term:"ambulate",translation:"deambular / caminar (término clínico)",example:"The goal is to ambulate twice a day."},
+    ],
+    phrases:[
+      {phrase:"Please don't get up without calling me first.",translation:"Por favor no se levante sin llamarme primero."},
+      {phrase:"Let me help you stand up slowly.",translation:"Déjeme ayudarle a levantarse despacio."},
+      {phrase:"Do you feel steady on your feet?",translation:"¿Se siente estable al pararse?"},
+      {phrase:"We need to do a fall risk assessment.",translation:"Necesitamos hacer una evaluación de riesgo de caídas."},
+      {phrase:"Hold onto the handrail when walking down the hall.",translation:"Agárrese del pasamanos al caminar por el pasillo."},
+      {phrase:"I'll walk alongside you in case you need support.",translation:"Caminaré a su lado por si necesita apoyo."},
+    ],
+    dialogue:{
+      context:"La señora Chen, 80 años con historial de caídas, quiere ir al baño sola de noche.",
+      turns:[
+        {speaker:"Mrs. Chen",role:"patient",message:"I need to use the bathroom. I can go by myself.",note:"'By myself' = sola. Autonomía vs. seguridad."},
+        {speaker:"Ana",role:"nurse",message:"I understand, but I need to walk with you. It's for your safety.",note:"'For your safety' = por su seguridad."},
+        {speaker:"Mrs. Chen",role:"patient",message:"I'm fine. I don't need help.",note:"Resistencia común en adultos mayores."},
+        {speaker:"Ana",role:"nurse",message:"I know you're independent. I just want to be close in case you need me.",note:"'Independent' valida al paciente."},
+        {speaker:"Ana",role:"nurse",message:"Take your walker, and call me when you're done. I'll be right here.",note:"'Right here' = aquí mismo."},
+      ]
+    }
+  },
+  cognitive:{
+    vocabulary:[
+      {term:"dementia",translation:"demencia",example:"She was diagnosed with dementia last year."},
+      {term:"disoriented",translation:"desorientado/a",example:"He seems disoriented today."},
+      {term:"agitated",translation:"agitado/a",example:"The patient became agitated at night."},
+      {term:"sundowning",translation:"síndrome del atardecer",example:"He shows signs of sundowning after 4 PM."},
+      {term:"memory loss",translation:"pérdida de memoria",example:"Short-term memory loss is common in Alzheimer's."},
+      {term:"redirect",translation:"redirigir (la atención)",example:"Gently redirect her when she's confused."},
+      {term:"cognitive decline",translation:"deterioro cognitivo",example:"The cognitive decline has progressed."},
+      {term:"reorientation",translation:"reorientación",example:"Use reorientation techniques consistently."},
+    ],
+    phrases:[
+      {phrase:"Do you know what day it is today?",translation:"¿Sabe qué día es hoy?"},
+      {phrase:"I understand you're feeling confused. You're safe here.",translation:"Entiendo que está confundido/a. Está seguro/a aquí."},
+      {phrase:"My name is Rosa. I'm your nurse today.",translation:"Mi nombre es Rosa. Soy su enfermera hoy."},
+      {phrase:"Let's take a deep breath together. Everything is okay.",translation:"Respiremos juntos profundo. Todo está bien."},
+      {phrase:"Your family will visit soon. Would you like to sit by the window?",translation:"Su familia vendrá pronto. ¿Quisiera sentarse junto a la ventana?"},
+      {phrase:"He was calm earlier but has become increasingly agitated.",translation:"Estuvo calmado antes pero se ha vuelto progresivamente agitado."},
+    ],
+    dialogue:{
+      context:"La señora Roberts, 87 años con Alzheimer, está desorientada buscando a su difunto esposo Harold.",
+      turns:[
+        {speaker:"Mrs. Roberts",role:"patient",message:"Where is Harold? I need to find Harold!",note:"No corregir directamente — causa más angustia."},
+        {speaker:"Patricia",role:"nurse",message:"Mrs. Roberts, hi! I'm Patricia. It sounds like Harold is very special to you.",note:"Validación emocional. Técnica terapéutica clave."},
+        {speaker:"Mrs. Roberts",role:"patient",message:"Yes, we've been married for 50 years. Have you seen him?",note:"Seguimos el hilo sin confirmar ni negar."},
+        {speaker:"Patricia",role:"nurse",message:"He sounds wonderful. Come, let's sit and I'll get you some warm tea.",note:"Redirección gentil con actividad concreta."},
+        {speaker:"Mrs. Roberts",role:"patient",message:"Tea... yes, I like tea.",note:"La redirección funcionó."},
+        {speaker:"Patricia",role:"nurse",message:"Perfect. Let's go to your room and you can tell me more about Harold.",note:"Escuchar sus recuerdos es terapéutico."},
+      ]
+    }
+  },
+  emergency:{
+    vocabulary:[
+      {term:"code blue",translation:"código azul (paro cardíaco)",example:"Call a code blue immediately!"},
+      {term:"stroke",translation:"derrame cerebral / ACV",example:"She shows signs of a stroke."},
+      {term:"seizure",translation:"convulsión / crisis epiléptica",example:"He had a seizure lasting two minutes."},
+      {term:"unresponsive",translation:"inconsciente / sin respuesta",example:"The patient is unresponsive."},
+      {term:"CPR",translation:"RCP — reanimación cardiopulmonar",example:"Begin CPR immediately."},
+      {term:"defibrillator",translation:"desfibrilador (AED)",example:"Get the defibrillator from the hallway."},
+      {term:"airway",translation:"vía aérea",example:"Make sure the airway is clear."},
+      {term:"rapid response",translation:"respuesta rápida (equipo de emergencia)",example:"Activate the rapid response team."},
+    ],
+    phrases:[
+      {phrase:"Call 911 right now!",translation:"¡Llame al 911 ahora mismo!"},
+      {phrase:"I need help — the patient is not breathing!",translation:"¡Necesito ayuda — el paciente no respira!"},
+      {phrase:"He is unresponsive. I'm starting CPR.",translation:"Está inconsciente. Estoy iniciando RCP."},
+      {phrase:"Get the crash cart and the AED!",translation:"¡Traigan el carro de emergencias y el desfibrilador!"},
+      {phrase:"FAST: Face drooping, Arm weakness, Speech difficulty, Time to call 911.",translation:"FAST: Cara caída, debilidad en brazo, dificultad para hablar, llamar al 911."},
+      {phrase:"Stay with me — help is on the way.",translation:"Quédese conmigo — la ayuda está en camino."},
+    ],
+    dialogue:{
+      context:"La enfermera Gabriela descubre al señor Owens, 79 años, inconsciente en el suelo.",
+      turns:[
+        {speaker:"Gabriela",role:"nurse",message:"Mr. Owens! Mr. Owens, can you hear me?",note:"Verificación de respuesta. Siempre llamar por nombre."},
+        {speaker:"Gabriela",role:"nurse",message:"He's unresponsive! Call a code! Get the crash cart now!",note:"'Call a code' = activar código de emergencia."},
+        {speaker:"Colleague",role:"staff",message:"Code called! ETA two minutes. Do you need the AED?",note:"'ETA' = tiempo estimado de llegada."},
+        {speaker:"Gabriela",role:"nurse",message:"Yes! No pulse. Starting compressions.",note:"'Compressions' = compresiones de RCP."},
+        {speaker:"Colleague",role:"staff",message:"AED here. Stand clear!",note:"'Stand clear!' = ¡Aléjense! Antes de la descarga."},
+        {speaker:"Gabriela",role:"nurse",message:"Clear! Resuming CPR. Document the time please.",note:"'Document the time' = documentar la hora."},
+      ]
+    }
+  },
+  family:{
+    vocabulary:[
+      {term:"prognosis",translation:"pronóstico",example:"The prognosis is uncertain at this point."},
+      {term:"next of kin",translation:"familiar más cercano / contacto de emergencia",example:"Who is the next of kin?"},
+      {term:"hospice",translation:"cuidados paliativos / hospicio",example:"The family is considering hospice care."},
+      {term:"consent",translation:"consentimiento",example:"We need consent for the procedure."},
+      {term:"discharge",translation:"alta médica",example:"We're planning for discharge next week."},
+      {term:"advance directive",translation:"directiva anticipada",example:"Does she have an advance directive?"},
+      {term:"power of attorney",translation:"poder notarial / poder legal",example:"Her son has medical power of attorney."},
+      {term:"update",translation:"actualización / informar",example:"I'll update you on her condition."},
+    ],
+    phrases:[
+      {phrase:"Your mother is stable and comfortable right now.",translation:"Su mamá está estable y cómoda en este momento."},
+      {phrase:"The doctor will speak with you shortly.",translation:"El médico hablará con usted en breve."},
+      {phrase:"We're doing everything we can for him.",translation:"Estamos haciendo todo lo posible por él."},
+      {phrase:"Do you have any questions about her care?",translation:"¿Tiene alguna pregunta sobre su cuidado?"},
+      {phrase:"Please make sure we have your updated contact information.",translation:"Por favor asegúrese de que tengamos su información de contacto actualizada."},
+      {phrase:"It would be helpful if you could visit in the mornings when she is most alert.",translation:"Sería útil que visitara por las mañanas cuando ella está más alerta."},
+    ],
+    dialogue:{
+      context:"El señor Kim, 84 años, hospitalizado tras un ACV. Su hija Jennifer llega angustiada.",
+      turns:[
+        {speaker:"Jennifer",role:"family",message:"I'm here for my father, Mr. Kim. How is he?",note:"Familiar en crisis. Necesita información clara y calma."},
+        {speaker:"Sandra",role:"nurse",message:"Ms. Kim, I'm Sandra, his nurse. I'm so glad you're here. He's stable right now.",note:"'I'm so glad you're here' humaniza el encuentro."},
+        {speaker:"Jennifer",role:"family",message:"A stroke? Can he speak? Is he going to be okay?",note:"No prometer lo que no podemos asegurar."},
+        {speaker:"Sandra",role:"nurse",message:"His speech is affected. The neurologist will come talk to you soon about his prognosis.",note:"Deriva correctamente al médico para la información clínica."},
+        {speaker:"Jennifer",role:"family",message:"Can I see him?",note:"La visita ayuda tanto al paciente como a la familia."},
+        {speaker:"Sandra",role:"nurse",message:"Absolutely. Hearing your voice will comfort him greatly.",note:"'Comfort him greatly' = le reconfortará mucho."},
+      ]
+    }
+  },
+  charting:{
+    vocabulary:[
+      {term:"intake and output",translation:"ingresos y egresos (líquidos)",example:"Document the intake and output every shift."},
+      {term:"nursing notes",translation:"notas de enfermería",example:"Write nursing notes in the chart."},
+      {term:"shift report",translation:"reporte de turno",example:"Give the shift report to the incoming nurse."},
+      {term:"assessment",translation:"evaluación / valoración",example:"Complete a head-to-toe assessment."},
+      {term:"intervention",translation:"intervención",example:"Document every nursing intervention."},
+      {term:"SOAP note",translation:"nota SOAP",example:"Write a SOAP note for each patient."},
+      {term:"chief complaint",translation:"queja principal / motivo de consulta",example:"Chief complaint: chest pain for 2 hours."},
+      {term:"allergies",translation:"alergias",example:"Document all known allergies clearly."},
+    ],
+    phrases:[
+      {phrase:"Patient reports pain level of 6 out of 10.",translation:"El paciente reporta nivel de dolor de 6 sobre 10."},
+      {phrase:"Vital signs within normal limits. Patient alert and oriented.",translation:"Signos vitales dentro de límites normales. Paciente alerta y orientado."},
+      {phrase:"Patient refused morning medications — doctor notified.",translation:"El paciente rechazó los medicamentos — médico notificado."},
+      {phrase:"Fall risk precautions in place.",translation:"Precauciones de riesgo de caída en su lugar."},
+      {phrase:"Wound appears clean, dry, and intact.",translation:"La herida aparece limpia, seca e intacta."},
+      {phrase:"Family meeting held — daughter updated on plan of care.",translation:"Reunión familiar realizada — hija informada sobre el plan de cuidado."},
+    ],
+    dialogue:{
+      context:"Final de turno. Valentina da el reporte a Michael sobre la señora Brown, 76 años, post-cirugía de cadera.",
+      turns:[
+        {speaker:"Valentina",role:"nurse",message:"Let me give you report on Mrs. Brown. She's post-op day two from a hip replacement.",note:"'Give you report' = dar el reporte de turno."},
+        {speaker:"Michael",role:"staff",message:"Got it. How was her pain today?",note:"'Got it' = entendido."},
+        {speaker:"Valentina",role:"nurse",message:"Pain was well-controlled. She rated it a 3. She's due for oxycodone at 11 PM.",note:"'She's due' = le corresponde / es hora de su dosis."},
+        {speaker:"Michael",role:"staff",message:"How's her wound?",note:"'Wound' = herida."},
+        {speaker:"Valentina",role:"nurse",message:"Clean and dry. She ambulated twice with PT. O2 sat 97% on room air.",note:"'Room air' = aire ambiente sin oxígeno suplementario."},
+        {speaker:"Valentina",role:"nurse",message:"Watch for DVT signs — she has compression stockings on.",note:"'DVT' = trombosis venosa profunda."},
+      ]
+    }
+  },
+  nutrition:{
+    vocabulary:[
+      {term:"dysphagia",translation:"disfagia (dificultad para tragar)",example:"She has dysphagia and needs thickened liquids."},
+      {term:"appetite",translation:"apetito",example:"His appetite has decreased significantly."},
+      {term:"thickened liquids",translation:"líquidos espesados",example:"Prepare thickened liquids for safety."},
+      {term:"malnutrition",translation:"desnutrición",example:"She shows signs of malnutrition."},
+      {term:"tube feeding",translation:"alimentación por sonda",example:"He requires tube feeding overnight."},
+      {term:"dehydration",translation:"deshidratación",example:"Watch for signs of dehydration."},
+      {term:"caloric intake",translation:"ingesta calórica",example:"Track his daily caloric intake."},
+      {term:"dietary restrictions",translation:"restricciones dietéticas",example:"Review all dietary restrictions carefully."},
+    ],
+    phrases:[
+      {phrase:"Are you able to swallow without any difficulty?",translation:"¿Puede tragar sin dificultad?"},
+      {phrase:"It's important that you drink enough fluids.",translation:"Es importante que tome suficientes líquidos."},
+      {phrase:"Your diet has been changed to pureed foods.",translation:"Su dieta ha sido cambiada a alimentos en puré."},
+      {phrase:"She only ate about 25% of her meal today.",translation:"Hoy comió aproximadamente el 25% de su comida."},
+      {phrase:"I noticed you haven't been eating well. Are you feeling nauseated?",translation:"Noté que no ha estado comiendo bien. ¿Siente náuseas?"},
+      {phrase:"The dietitian will come speak with you tomorrow.",translation:"La nutricionista vendrá a hablar con usted mañana."},
+    ],
+    dialogue:{
+      context:"El señor Davis, 81 años con disfagia, tose al tragar el jugo. La enfermera Mónica evalúa.",
+      turns:[
+        {speaker:"Mónica",role:"nurse",message:"Good morning, Mr. Davis! Are you feeling hungry?",note:"Manera amable de iniciar la evaluación nutricional."},
+        {speaker:"Mr. Davis",role:"patient",message:"Not really. And I keep coughing when I drink my juice.",note:"'I keep coughing' = sigo tosiendo. Señal de alerta de aspiración."},
+        {speaker:"Mónica",role:"nurse",message:"Coughing while swallowing can mean liquid is going the wrong way.",note:"'Going the wrong way' = yendo por el camino equivocado (aspiración)."},
+        {speaker:"Mr. Davis",role:"patient",message:"Is it dangerous?",note:"Ser honesta pero tranquilizadora."},
+        {speaker:"Mónica",role:"nurse",message:"It can be. I'll switch your juice to a thickened version and notify the speech therapist.",note:"'Speech therapist' = terapeuta de deglución."},
+        {speaker:"Mónica",role:"nurse",message:"Let's try a small sip together and see how it goes.",note:"'Let's try together' = hagámoslo juntos. Da confianza al paciente."},
+      ]
+    }
+  },
+  hygiene:{
+    vocabulary:[
+      {term:"bed bath",translation:"baño en cama",example:"She needs a complete bed bath today."},
+      {term:"oral hygiene",translation:"higiene oral",example:"Perform oral hygiene twice a day."},
+      {term:"pressure ulcer",translation:"úlcera por presión / escara",example:"Turn patient to prevent pressure ulcers."},
+      {term:"incontinence",translation:"incontinencia",example:"He has bowel and bladder incontinence."},
+      {term:"skin integrity",translation:"integridad de la piel",example:"Assess skin integrity during each bath."},
+      {term:"catheter",translation:"catéter / sonda urinaria",example:"Empty the catheter bag every shift."},
+      {term:"repositioning",translation:"cambio de posición",example:"Reposition every two hours to prevent sores."},
+      {term:"perineal care",translation:"cuidado perineal / higiene íntima",example:"Provide perineal care after each episode."},
+    ],
+    phrases:[
+      {phrase:"It's time for your bath. Would you prefer a shower or a bed bath?",translation:"Es hora de su baño. ¿Prefiere ducharse o baño en cama?"},
+      {phrase:"I'll make sure to protect your privacy.",translation:"Me aseguraré de proteger su privacidad."},
+      {phrase:"Please let me know if the water is too hot or too cold.",translation:"Por favor avíseme si el agua está muy caliente o muy fría."},
+      {phrase:"I notice some redness on your lower back — I'll apply barrier cream.",translation:"Noto enrojecimiento en su espalda baja — aplicaré crema protectora."},
+      {phrase:"We need to turn you every two hours to protect your skin.",translation:"Necesitamos voltearle cada dos horas para proteger su piel."},
+      {phrase:"Good job cooperating during the bath!",translation:"¡Muy bien por cooperar durante el baño!"},
+    ],
+    dialogue:{
+      context:"La señora Lopez, 78 años con movilidad limitada, necesita baño en cama. Valora su privacidad.",
+      turns:[
+        {speaker:"Isabel",role:"nurse",message:"Good morning, Mrs. Lopez. I'll be giving you a bed bath today. Is that okay?",note:"Siempre pedir consentimiento antes del cuidado personal."},
+        {speaker:"Mrs. Lopez",role:"patient",message:"I wish I could shower, but I know I can't walk well enough.",note:"Validar la frustración con pérdida de independencia."},
+        {speaker:"Isabel",role:"nurse",message:"I completely understand. I'll cover you to keep you warm and comfortable.",note:"'Cover you' = cubrirla. Dignidad y comodidad."},
+        {speaker:"Mrs. Lopez",role:"patient",message:"Please close the curtain and the door.",note:"Necesidad de privacidad. Siempre garantizarla."},
+        {speaker:"Isabel",role:"nurse",message:"Absolutely — curtain and door closed. Your privacy is very important to me.",note:"Reafirmar que la privacidad es prioridad."},
+        {speaker:"Isabel",role:"nurse",message:"Let's get you feeling fresh and comfortable. I'll start with your face.",note:"Técnica estándar: de arriba hacia abajo."},
+      ]
+    }
+  },
+};
+
+// ═══════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════
+let currentModule = null;
+let currentContent = null;
+let currentTab = "vocab";
+let flippedCards = {};
+let quizQuestions = [];
+let quizIdx = 0;
+let quizScore = 0;
+let quizResultShown = false;
+let recognition = null;
+let pronText = "";
+let isListening = false;
+
+// ═══════════════════════════════════════════
+// SPEECH SYNTHESIS
+// ═══════════════════════════════════════════
+function speak(text, slow=false) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = slow ? 0.6 : 0.85; u.pitch = 1;
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(v=>v.lang==="en-US"&&v.name.toLowerCase().includes("female"))
+          ||voices.find(v=>v.lang==="en-US")
+          ||voices.find(v=>v.lang.startsWith("en"));
+  if(v) u.voice=v;
+  speechSynthesis.speak(u);
+}
+
+function makeSpeakBtn(text, slow=false, size="sm") {
+  const id = "sb_" + Math.random().toString(36).slice(2);
+  const cls = `speak-btn ${size} ${slow?"slow":"normal"}`;
+  const label = slow ? "🐢" : "🔊";
+  setTimeout(()=>{
+    const el = document.getElementById(id);
+    if(el) el.onclick = (e)=>{
+      e.stopPropagation();
+      document.querySelectorAll('.speak-btn').forEach(b=>b.classList.remove('playing'));
+      el.classList.add('playing');
+      el.textContent = "♪";
+      speak(text, slow);
+      setTimeout(()=>{ el.classList.remove('playing'); el.textContent=label; }, (text.length*90)+(slow?2000:800));
+    };
+  }, 50);
+  return `<button id="${id}" class="${cls}">${label}</button>`;
+}
+
+function makePronBtn(text) {
+  const id = "pb_" + Math.random().toString(36).slice(2);
+  setTimeout(()=>{
+    const el = document.getElementById(id);
+    if(el) el.onclick = (e)=>{ e.stopPropagation(); openPronModal(text); };
+  }, 50);
+  return `<button id="${id}" style="height:26px;padding:0 8px;border-radius:13px;border:none;cursor:pointer;background:linear-gradient(135deg,#4a1a6e,#2d0f45);color:#c084fc;font-size:.62rem;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.04em">🎤 Practicar</button>`;
+}
+
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+function initHome() {
+  const grid = document.getElementById("module-grid");
+  grid.innerHTML = MODULES.map((m,i) => `
+    <button class="module-btn fade-up" style="border-left:3px solid ${m.color};animation-delay:${i*.06}s" onclick="openModule('${m.id}')">
+      <div style="font-size:1.4rem;margin-bottom:5px">${m.icon}</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:600;color:#c4ddee;font-size:.82rem;line-height:1.2">${m.label}</div>
+      <div style="color:#2a4a6e;font-size:.6rem;margin-top:3px;font-style:italic">${m.en}</div>
+    </button>`).join("");
+  document.getElementById("custom-input").addEventListener("keydown", e=>{ if(e.key==="Enter") handleCustom(); });
+}
+
+function showHome() {
+  document.getElementById("screen-home").classList.remove("hidden");
+  document.getElementById("screen-learn").classList.add("hidden");
+  document.getElementById("screen-quiz").classList.add("hidden");
+}
+
+function showLearn() {
+  document.getElementById("screen-home").classList.add("hidden");
+  document.getElementById("screen-learn").classList.remove("hidden");
+  document.getElementById("screen-quiz").classList.add("hidden");
+}
+
+// ═══════════════════════════════════════════
+// MODULE
+// ═══════════════════════════════════════════
+function openModule(id) {
+  currentModule = MODULES.find(m=>m.id===id);
+  currentContent = CONTENT[id];
+  flippedCards = {};
+  document.getElementById("learn-title").textContent = `${currentModule.icon} ${currentModule.label}`;
+  document.getElementById("ai-loading").classList.add("hidden");
+  document.getElementById("learn-content").classList.remove("hidden");
+  switchTab("vocab", document.querySelector('[data-tab="vocab"]'));
+  buildAllTabs();
+  showLearn();
+}
+
+async function handleCustom() {
+  const topic = document.getElementById("custom-input").value.trim();
+  if (!topic) return;
+  currentModule = {id:"custom", icon:"✦", label:topic, color:"#1a7ae8", en:"Custom"};
+  document.getElementById("learn-title").textContent = `✦ ${topic}`;
+  document.getElementById("ai-loading").classList.remove("hidden");
+  document.getElementById("learn-content").classList.add("hidden");
+  showLearn();
+  try {
+    const [vR, dR] = await Promise.all([
+      fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Bilingual English/Spanish nursing tutor. Return ONLY valid JSON:\n{"vocabulary":[{"term":string,"translation":string,"example":string}],"phrases":[{"phrase":string,"translation":string}]}\n8 vocab, 6 phrases.`,messages:[{role:"user",content:`Nursing/elderly care topic: ${topic}`}]})}).then(r=>r.json()),
+      fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Bilingual screenwriter. 6-turn English dialogue for a Spanish-speaking nurse with elderly patient. Return ONLY valid JSON:\n{"context":"Spanish description","turns":[{"speaker":string,"role":"nurse"|"patient"|"family"|"staff","message":string,"note":string}]}`,messages:[{role:"user",content:`Dialogue topic: ${topic}`}]})}).then(r=>r.json()),
+    ]);
+    const v = JSON.parse(vR.content?.find(b=>b.type==="text")?.text.replace(/```json|```/g,"").trim()||"{}");
+    const d = JSON.parse(dR.content?.find(b=>b.type==="text")?.text.replace(/```json|```/g,"").trim()||"{}");
+    currentContent = {...v, dialogue:d};
+  } catch { currentContent = {vocabulary:[],phrases:[],dialogue:null}; }
+  document.getElementById("ai-loading").classList.add("hidden");
+  document.getElementById("learn-content").classList.remove("hidden");
+  buildAllTabs();
+  switchTab("vocab", document.querySelector('[data-tab="vocab"]'));
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+function switchTab(tabName, btn) {
+  if (tabName === "quiz") return;
+  currentTab = tabName;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  ["vocab","pronunciation","phrases","dialogue"].forEach(t=>{
+    document.getElementById("tab-"+t).classList.toggle("hidden", t!==tabName);
+  });
+}
+
+function buildAllTabs() {
+  buildVocab();
+  buildPronunciation();
+  buildPhrases();
+  buildDialogue();
+}
+
+// ─── VOCAB ────────────────────────────────
+function buildVocab() {
+  const vocab = currentContent?.vocabulary || [];
+  const el = document.getElementById("tab-vocab");
+  el.innerHTML = `<p style="color:#2a4a6e;font-size:.65rem;margin-bottom:12px;font-style:italic">🔊 escuchar · 🐢 despacio · 🎤 practicar · toca para voltear</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    ${vocab.map((item,i)=>{
+      const ph = PHONETICS[item.term.toLowerCase()]||"";
+      const id = "card_"+i;
+      return `<div class="flash-wrap fade-up" style="animation-delay:${i*.07}s" onclick="flipCard('${id}')">
+        <div class="flash-inner" id="${id}">
+          <div class="flash-face flash-front">
+            <span style="font-size:1rem;font-weight:800;color:#e2f4ff;text-align:center;line-height:1.2">${item.term}</span>
+            ${ph?`<span style="font-size:.6rem;color:#f59e0b;font-style:italic;text-align:center">📖 ${ph}</span>`:""}
+            <div style="display:flex;gap:4px;margin-top:2px" onclick="event.stopPropagation()">
+              ${makeSpeakBtn(item.term)} ${makeSpeakBtn(item.term,true)} ${makePronBtn(item.term)}
+            </div>
+            <span style="font-size:.52rem;color:#1a3a5e;text-transform:uppercase;letter-spacing:.07em">toca para voltear</span>
+          </div>
+          <div class="flash-face flash-back">
+            <span style="font-size:.9rem;font-weight:700;color:#6effa0;text-align:center">${item.translation}</span>
+            <span style="font-size:.65rem;color:#2a7a4a;text-align:center;line-height:1.4;font-style:italic">${item.example}</span>
+            <span style="font-size:.52rem;color:#1a3a1e;text-transform:uppercase;letter-spacing:.07em">toca para voltear</span>
+          </div>
+        </div>
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function flipCard(id) {
+  flippedCards[id] = !flippedCards[id];
+  document.getElementById(id).classList.toggle("flipped", flippedCards[id]);
+}
+
+// ─── PRONUNCIATION ───────────────────────
+function buildPronunciation() {
+  const vocab = currentContent?.vocabulary || [];
+  const el = document.getElementById("tab-pronunciation");
+  el.innerHTML = `<div style="background:#0a1525;border:1px solid #1a3a5e;border-radius:12px;padding:12px;margin-bottom:14px">
+    <p style="color:#5a8aaa;font-size:.75rem;line-height:1.7;margin:0">
+      🔊 <strong style="color:#d4eeff">Normal</strong> — velocidad real &nbsp;·&nbsp;
+      🐢 <strong style="color:#d4eeff">Despacio</strong> — sílaba por sílaba &nbsp;·&nbsp;
+      🎤 <strong style="color:#d4eeff">Practicar</strong> — habla y recibe feedback de IA
+    </p>
+  </div>
+  ${vocab.map((item,i)=>{
+    const ph = PHONETICS[item.term.toLowerCase()]||"";
+    return `<div class="fade-up" style="background:linear-gradient(135deg,#0d1f35,#091728);border:1px solid #1a3a5e;border-radius:14px;padding:14px 16px;margin-bottom:10px;animation-delay:${i*.07}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <p style="margin:0 0 2px;font-size:1.05rem;font-weight:700;color:#d4eeff">${item.term}</p>
+          ${ph?`<div style="background:#1a2a10;border:1px solid #2a4a15;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:4px"><span style="font-size:.7rem;color:#f59e0b;font-style:italic">📖 </span><strong style="font-size:.78rem;color:#fbbf24;font-family:monospace">${ph}</strong></div>`:""}
+          <p style="margin:0;font-size:.78rem;color:#5a8aaa;font-style:italic">${item.translation}</p>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center;flex-shrink:0">
+          ${makeSpeakBtn(item.term,"sm")} ${makeSpeakBtn(item.term,true,"sm")} ${makePronBtn(item.term)}
+        </div>
+      </div>
+      <p style="margin:8px 0 0;font-size:.7rem;color:#2a4a6e;font-style:italic;line-height:1.4;border-top:1px solid #1a2a3e;padding-top:8px">${item.example}</p>
+    </div>`;
+  }).join("")}`;
+}
+
+// ─── PHRASES ─────────────────────────────
+function buildPhrases() {
+  const phrases = currentContent?.phrases || [];
+  const el = document.getElementById("tab-phrases");
+  el.innerHTML = `<p style="color:#2a4a6e;font-size:.65rem;margin-bottom:12px;font-style:italic">🔊 escuchar · 🐢 despacio · 🎤 practicar · toca el texto para ver traducción</p>
+  ${phrases.map((item,i)=>`
+    <div class="phrase-card fade-up" style="animation-delay:${i*.08}s">
+      <p style="margin:0 0 8px;font-size:.92rem;color:#d4eeff;line-height:1.5;font-weight:600;cursor:pointer" onclick="togglePhrase(this)">
+        "${item.phrase}"
+      </p>
+      <p style="margin:0 0 8px;font-size:.82rem;color:#6ea8d0;font-style:italic;display:none">🇪🇸 ${item.translation}</p>
+      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+        ${makeSpeakBtn(item.phrase)} ${makeSpeakBtn(item.phrase,true)} ${makePronBtn(item.phrase)}
+        <span style="font-size:.6rem;color:#1e3a4e;margin-left:auto;cursor:pointer" onclick="togglePhrase(this.closest('.phrase-card').querySelector('p'))">▼ traducción</span>
+      </div>
+    </div>`).join("")}`;
+}
+
+function togglePhrase(p) {
+  const next = p.nextElementSibling;
+  if(next && next.tagName==="P") { next.style.display = next.style.display==="none"?"block":"none"; }
+}
+
+// ─── DIALOGUE ────────────────────────────
+function buildDialogue() {
+  const diag = currentContent?.dialogue;
+  const el = document.getElementById("tab-dialogue");
+  if(!diag) { el.innerHTML=`<p style="color:#5a8aaa;text-align:center;padding:30px">No hay diálogo disponible.</p>`; return; }
+  const roleClass = {nurse:"bubble-nurse",patient:"bubble-patient",family:"bubble-family",staff:"bubble-staff"};
+  const roleLabel = {nurse:"👩‍⚕️ Enfermera",patient:"🧓 Paciente",family:"👨‍👩‍👧 Familia",staff:"🏥 Personal"};
+  const isRight = r => r==="nurse"||r==="staff";
+  el.innerHTML = `<div style="background:#0a1a2e;border:1px solid #1a2a3e;border-left:3px solid #1a7ae8;border-radius:12px;padding:14px;margin-bottom:14px">
+    <p style="color:#5a8aaa;font-size:.8rem;line-height:1.6;font-style:italic">📍 ${diag.context}</p>
+  </div>
+  <p style="color:#2a4a6e;font-size:.62rem;margin-bottom:12px">🔊 escucha · 🎤 practica los turnos de enfermería · toca el texto para ver notas</p>
+  ${(diag.turns||[]).map((turn,i)=>`
+    <div style="display:flex;flex-direction:column;align-items:${isRight(turn.role)?"flex-end":"flex-start"};margin-bottom:14px" class="fade-up" style="animation-delay:${i*.09}s">
+      <span style="font-size:.6rem;color:#3a5a8e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">${roleLabel[turn.role]||turn.speaker}</span>
+      <div class="${roleClass[turn.role]||"bubble-nurse"}" style="max-width:85%;padding:10px 12px">
+        <p style="margin:0 0 8px;color:#d4eeff;font-size:.88rem;line-height:1.5;cursor:pointer" onclick="toggleNote(this)">${turn.message}</p>
+        <div style="display:none;margin-bottom:8px;padding-top:8px;border-top:1px solid #ffffff12">
+          <p style="margin:0;color:#7ab8e8;font-size:.74rem;line-height:1.5;font-style:italic">💡 ${turn.note}</p>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center">
+          ${makeSpeakBtn(turn.message)} ${makeSpeakBtn(turn.message,true)}
+          ${isRight(turn.role)?makePronBtn(turn.message):""}
+          <span style="font-size:.58rem;color:#1e3a5e;cursor:pointer;margin-left:auto" onclick="toggleNote(this.closest('div').previousElementSibling.previousElementSibling)">▼ nota</span>
+        </div>
+      </div>
+    </div>`).join("")}`;
+}
+
+function toggleNote(msgEl) {
+  const noteDiv = msgEl.nextElementSibling;
+  if(noteDiv) noteDiv.style.display = noteDiv.style.display==="none"?"block":"none";
+}
+
+// ═══════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════
+function startQuiz() {
+  if(!currentContent?.vocabulary?.length) return;
+  quizQuestions = currentContent.vocabulary.slice(0,6).map(v=>({question:v.translation,answer:v.term,example:v.example}));
+  quizIdx=0; quizScore=0; quizResultShown=false;
+  document.getElementById("screen-home").classList.add("hidden");
+  document.getElementById("screen-learn").classList.add("hidden");
+  document.getElementById("screen-quiz").classList.remove("hidden");
+  document.getElementById("quiz-done").classList.add("hidden");
+  document.getElementById("quiz-btn").classList.remove("hidden");
+  document.getElementById("quiz-input").classList.remove("hidden");
+  document.querySelector(".progress-bar").classList.remove("hidden");
+  document.getElementById("quiz-score-badge").classList.remove("hidden");
+  loadQuizQuestion();
+}
+
+function loadQuizQuestion() {
+  const q = quizQuestions[quizIdx];
+  document.getElementById("quiz-question").textContent = q.question;
+  document.getElementById("quiz-counter").textContent = `Pregunta ${quizIdx+1} de ${quizQuestions.length}`;
+  document.getElementById("quiz-input").value = "";
+  document.getElementById("quiz-input").className = "quiz-input";
+  document.getElementById("quiz-result-box").classList.add("hidden");
+  document.getElementById("quiz-btn").textContent = "Verificar";
+  document.getElementById("quiz-btn").onclick = checkQuiz;
+  document.getElementById("quiz-progress").style.width = `${(quizIdx/quizQuestions.length)*100}%`;
+  document.getElementById("quiz-score-badge").textContent = `${quizScore} ✓ / ${quizIdx}`;
+  quizResultShown = false;
+}
+
+function quizInputChanged() {
+  if(!quizResultShown) {
+    document.getElementById("quiz-btn").onclick = checkQuiz;
+  }
+}
+
+function checkQuiz() {
+  if(quizResultShown) { nextQuiz(); return; }
+  const ans = document.getElementById("quiz-input").value.trim().toLowerCase();
+  const correct = quizQuestions[quizIdx].answer.toLowerCase().trim();
+  const ok = ans === correct;
+  if(ok) quizScore++;
+  quizResultShown = true;
+  const input = document.getElementById("quiz-input");
+  input.classList.add(ok?"correct":"wrong");
+  input.disabled = true;
+  const box = document.getElementById("quiz-result-box");
+  box.classList.remove("hidden");
+  box.style.background = ok?"#0a2a15":"#2a0a0a";
+  box.style.border = `1px solid ${ok?"#6effa0":"#ff6060"}`;
+  document.getElementById("quiz-result-msg").style.color = ok?"#6effa0":"#ff8080";
+  document.getElementById("quiz-result-msg").textContent = ok ? "✓ Correct!" : `✗ Respuesta: "${quizQuestions[quizIdx].answer}"`;
+  document.getElementById("quiz-example").textContent = quizQuestions[quizIdx].example;
+  const btn = document.getElementById("quiz-btn");
+  btn.textContent = quizIdx < quizQuestions.length-1 ? "Siguiente →" : "Ver resultado";
+  btn.onclick = nextQuiz;
+  document.getElementById("quiz-score-badge").textContent = `${quizScore} ✓ / ${quizIdx+1}`;
+}
+
+function nextQuiz() {
+  document.getElementById("quiz-input").disabled = false;
+  quizIdx++;
+  if(quizIdx < quizQuestions.length) { loadQuizQuestion(); }
+  else { showQuizDone(); }
+}
+
+function showQuizDone() {
+  const pct = Math.round(quizScore/quizQuestions.length*100);
+  document.getElementById("quiz-btn").classList.add("hidden");
+  document.getElementById("quiz-input").classList.add("hidden");
+  document.getElementById("quiz-result-box").classList.add("hidden");
+  document.querySelector(".progress-bar").classList.add("hidden");
+  document.getElementById("quiz-score-badge").classList.add("hidden");
+  document.getElementById("quiz-done").classList.remove("hidden");
+  document.getElementById("quiz-done-emoji").textContent = pct>=80?"🏆":pct>=50?"⭐":"💪";
+  document.getElementById("quiz-done-title").textContent = pct>=80?"¡Excellent!":pct>=50?"¡Good job!":"Keep going!";
+  document.getElementById("quiz-done-score").innerHTML = `<strong style="color:#6effa0">${quizScore}/${quizQuestions.length}</strong> correctas — ${pct}%`;
+}
+
+function restartQuiz() {
+  quizIdx=0; quizScore=0;
+  document.getElementById("quiz-done").classList.add("hidden");
+  document.getElementById("quiz-btn").classList.remove("hidden");
+  document.getElementById("quiz-input").classList.remove("hidden");
+  document.querySelector(".progress-bar").classList.remove("hidden");
+  document.getElementById("quiz-score-badge").classList.remove("hidden");
+  loadQuizQuestion();
+}
+
+// ═══════════════════════════════════════════
+// PRONUNCIATION MODAL — with real mic
+// ═══════════════════════════════════════════
+function openPronModal(text) {
+  pronText = text;
+  document.getElementById("pron-word").textContent = text;
+  const ph = PHONETICS[text.toLowerCase()]||"";
+  const phEl = document.getElementById("pron-phonetic");
+  if(ph) { phEl.innerHTML=`<span style="font-size:.75rem;color:#f59e0b;font-style:italic">📖 </span><strong style="font-size:.85rem;color:#fbbf24;font-family:monospace;letter-spacing:.05em">${ph}</strong>`; phEl.style.display="inline-block"; }
+  else { phEl.style.display="none"; }
+  resetPron();
+  document.getElementById("pron-modal").classList.remove("hidden");
+
+  // Check speech recognition support
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) {
+    document.getElementById("pron-idle").classList.add("hidden");
+    document.getElementById("pron-fallback").classList.remove("hidden");
+  }
+}
+
+function closePronModal() {
+  if(isListening) stopListening();
+  document.getElementById("pron-modal").classList.add("hidden");
+}
+
+function resetPron() {
+  isListening = false;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  document.getElementById("pron-idle").classList.toggle("hidden", !SR);
+  document.getElementById("pron-listening").classList.add("hidden");
+  document.getElementById("pron-processing").classList.add("hidden");
+  document.getElementById("pron-result").classList.add("hidden");
+  document.getElementById("pron-fallback").classList.toggle("hidden", !!SR);
+  const btn = document.getElementById("mic-main-btn");
+  btn.className = "idle";
+  btn.textContent = "🎤";
+  document.getElementById("mic-label").textContent = "PRESIONA PARA HABLAR";
+  document.getElementById("mic-label").style.color = "#1a7ae8";
+  document.getElementById("ripple1").style.display="none";
+  document.getElementById("ripple2").style.display="none";
+}
+
+function speakPron(slow) {
+  speak(pronText, slow);
+}
+
+function toggleMic() {
+  if(isListening) stopListening();
+  else startListening();
+}
+
+function startListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  recognition = new SR();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 3;
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById("pron-idle").classList.add("hidden");
+    document.getElementById("pron-listening").classList.remove("hidden");
+    document.getElementById("pron-result").classList.add("hidden");
+    const btn = document.getElementById("mic-main-btn");
+    btn.className = "listening";
+    btn.textContent = "⏹";
+    document.getElementById("mic-label").textContent = "ESCUCHANDO...";
+    document.getElementById("mic-label").style.color = "#ef4444";
+    document.getElementById("ripple1").style.display="block";
+    document.getElementById("ripple2").style.display="block";
+  };
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    const confidence = e.results[0][0].confidence;
+    processResult(transcript, confidence);
+  };
+  recognition.onerror = (e) => {
+    isListening = false;
+    if(e.error === "not-allowed") {
+      document.getElementById("pron-idle").classList.add("hidden");
+      document.getElementById("pron-listening").classList.add("hidden");
+      document.getElementById("pron-fallback").classList.remove("hidden");
+    } else {
+      resetPron();
+    }
+  };
+  recognition.onend = () => { isListening = false; };
+  recognition.start();
+}
+
+function stopListening() {
+  if(recognition) { recognition.stop(); recognition=null; }
+  isListening = false;
+  document.getElementById("pron-listening").classList.add("hidden");
+  document.getElementById("pron-idle").classList.remove("hidden");
+  const btn = document.getElementById("mic-main-btn");
+  btn.className = "idle"; btn.textContent = "🎤";
+}
+
+function similarity(a, b) {
+  const clean = s => s.toLowerCase().replace(/[^a-z\s]/g,"").trim();
+  const wa = clean(a).split(/\s+/).filter(Boolean);
+  const wb = clean(b).split(/\s+/).filter(Boolean);
+  if(!wa.length) return 0;
+  const hits = wa.filter(w => wb.some(x => x===w || x.startsWith(w.slice(0,4)) || w.startsWith(x.slice(0,4))));
+  return Math.round((hits.length/wa.length)*100);
+}
+
+async function processResult(transcript, confidence) {
+  document.getElementById("pron-idle").classList.add("hidden");
+  document.getElementById("pron-listening").classList.add("hidden");
+  document.getElementById("pron-processing").classList.remove("hidden");
+  document.getElementById("ripple1").style.display="none";
+  document.getElementById("ripple2").style.display="none";
+
+  const sc = Math.max(similarity(transcript, pronText), Math.round((confidence||0)*100));
+  const scColor = sc>=75?"#6effa0":sc>=45?"#f59e0b":"#ff6060";
+  const scMsg = sc>=75?"¡Excelente pronunciación! 🏆":sc>=45?"¡Bien! Sigue practicando ⭐":"¡Casi! Intenta de nuevo 💪";
+  const gradient = sc>=75?"linear-gradient(90deg,#1a7ae8,#6effa0)":sc>=45?"linear-gradient(90deg,#f59e0b,#fbbf24)":"linear-gradient(90deg,#ef4444,#f97316)";
+
+  // Get Claude feedback
+  let tip = "";
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:250,system:"You are an English pronunciation coach for Spanish-speaking nurses. Always respond in Spanish. Be specific, encouraging and brief.",messages:[{role:"user",content:`Target phrase: "${pronText}"\nWhat the student said: "${transcript}"\nSimilarity: ${sc}%\n\nIn 2-3 sentences in Spanish:\n1. Evaluate how close they were\n2. Give ONE specific pronunciation tip for the hardest sound\nBe encouraging.`}]})});
+    const data = await res.json();
+    tip = data.content?.find(b=>b.type==="text")?.text || "";
+  } catch { tip = sc>=70?"¡Muy bien! Tu pronunciación fue clara y correcta. Sigue practicando para que suene aún más natural.":"Escucha el audio lento 🐢 e intenta imitar cada sílaba. ¡Tú puedes!"; }
+
+  document.getElementById("pron-processing").classList.add("hidden");
+  document.getElementById("pron-result").classList.remove("hidden");
+  const box = document.getElementById("pron-score-box");
+  box.style.background = "#0a1525";
+  box.style.border = `1px solid ${scColor}44`;
+  document.getElementById("pron-heard").textContent = `"${transcript}"`;
+  document.getElementById("pron-score-fill").style.width = `${sc}%`;
+  document.getElementById("pron-score-fill").style.background = gradient;
+  document.getElementById("pron-score-msg").textContent = scMsg;
+  document.getElementById("pron-score-msg").style.color = scColor;
+  document.getElementById("pron-score-pct").textContent = `${sc}%`;
+  document.getElementById("pron-score-pct").style.color = scColor;
+  document.getElementById("pron-tip-text").textContent = tip;
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.addEventListener("DOMContentLoaded", ()=>{
+  initHome();
+  // Pre-load voices
+  if(window.speechSynthesis) {
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = ()=>speechSynthesis.getVoices();
+  }
+  // Close pron modal on overlay click
+  document.getElementById("pron-modal").addEventListener("click", (e)=>{
+    if(e.target===document.getElementById("pron-modal")) closePronModal();
+  });
+});
+</script>
+</body>
+</html>
