@@ -747,10 +747,18 @@ function openModule(id) {
   currentContent = CONTENT[id];
   flippedCards = {};
   document.getElementById("learn-title").textContent = `${currentModule.icon} ${currentModule.label}`;
-  document.getElementById("ai-loading").classList.add("hidden");
-  document.getElementById("learn-content").classList.remove("hidden");
-  switchTab("vocab", document.querySelector('[data-tab="vocab"]'));
+  document.getElementById("ai-loading").style.display = "none";
+  document.getElementById("learn-content").style.display = "block";
+  // Reset all tabs to hidden first
+  ["vocab","pronunciation","phrases","dialogue"].forEach(t=>{
+    document.getElementById("tab-"+t).classList.add("hidden");
+  });
   buildAllTabs();
+  // Activate vocab tab
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelector('[data-tab="vocab"]').classList.add("active");
+  document.getElementById("tab-vocab").classList.remove("hidden");
+  currentTab = "vocab";
   showLearn();
 }
 
@@ -1061,9 +1069,17 @@ function toggleMic() {
   else startListening();
 }
 
-function startListening() {
+async function startListening() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR) return;
+  // Request mic permission explicitly for iOS Safari
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch(e) {
+    document.getElementById("pron-idle").classList.add("hidden");
+    document.getElementById("pron-fallback").classList.remove("hidden");
+    return;
+  }
   recognition = new SR();
   recognition.lang = "en-US";
   recognition.interimResults = false;
